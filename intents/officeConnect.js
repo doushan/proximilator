@@ -1,6 +1,5 @@
 const generic = require('../helpers/generic');
 
-
 const OfficeConnectIntent = {
     canHandle(handlerInput) {
         const {
@@ -10,10 +9,8 @@ const OfficeConnectIntent = {
         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeConnectIntent');
     },
     async handle(handlerInput) {
-        console.log("BLABLABLABLABBAL");
         var officeSlot = "";
         var message = "";
-        let messages = await generic.getMessages();
         if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
             officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
             contact = await generic.getProximityOfficeContact(officeSlot);
