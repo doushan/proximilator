@@ -10,7 +10,6 @@ const OfficeConnectIntent = {
         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeConnectIntent');
     },
     async handle(handlerInput) {
-        console.log("BLABLABLABLABBAL");
         var officeSlot = "";
         var message = "";
         let messages = await generic.getMessages();
