@@ -11,7 +11,19 @@ const PERMISSIONS = ['read::alexa:device:all:address'];
 
 // require('./generics/generic');
 
-var generic = require('./generics/generic.js');
+var generic = require('./generics/generic');
+
+const cancelIntent = require('./intents/cancel');
+
+const officeAltitude = require('./intents/officeAltitude');
+
+const officeConnect = require('./intents/officeConnect');
+
+const officeCount = require('./intents/officeCount');
+
+const officeDistance = require('./intents/officeDistance');
+
+const officeCountry =  require('./intents/officeCountry');
 
 // Helper Functions
 const LaunchRequest = {
@@ -24,58 +36,6 @@ const LaunchRequest = {
         return handlerInput.responseBuilder.speak(messages.WELCOME)
             .reprompt(messages.WHAT_DO_YOU_WANT)
             .getResponse();
-    },
-};
-
-const OfficeConnectIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
-
-        return request.type === 'IntentRequest' && (request.intent.name === 'OfficeConnectIntent');
-    },
-    async handle(handlerInput) {
-        var officeSlot = "";
-        var message = "";
-        
-        if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
-            officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-            contact = await generic.getProximityOfficeContact(officeSlot);
-            message = "You can contact " + officeSlot + " on " + contact;
-        }
-        else {
-            officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.value;
-            message = "I'm Sorry but " + officeSlot + " does not exist.";
-        }
-
-        return handlerInput.responseBuilder.speak(message).getResponse();
-    },
-};
-
-const OfficeCountIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
-
-        return request.type === 'IntentRequest' && (request.intent.name === 'OfficeCountIntent');
-    },
-    async handle(handlerInput) {
-
-        var message;
-
-        proximity_offices = await generic.getProximityOffices();
-
-        // if (handlerInput.requestEnvelope.request.intent.slots.country.resolutions == "undefined") {
-        //     message = "There are " + Object.keys(proximity_offices).length + " offices in the Proximity Global Network";
-        // } else if(handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
-        //     message = "This is a a tesst";
-        // }
-
-        message = "There are " + Object.keys(proximity_offices).length + " offices in the Proximity Global Network";
-
-        return handlerInput.responseBuilder.speak(message).getResponse();
     },
 };
 
@@ -102,157 +62,142 @@ const OfficeInfoIntent = {
     },
 };
 
-const OfficeAltitudeIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
+// const OfficeCountryIntent = {
+//     canHandle(handlerInput) {
+//         const {
+//             request
+//         } = handlerInput.requestEnvelope;
 
-        return request.type === 'IntentRequest' && (request.intent.name === 'OfficeAltitudeIntent');
-    },
-    async handle(handlerInput) {
-        var proximity_office = await generic.getProximityOfficesAltitude();
-        console.log("PROX OFFICESS", proximity_office);
-        return handlerInput.responseBuilder.speak(proximity_office.split("||")[0] + " has the highest altitude at "+proximity_office.split("||")[1]+" meters above sea level").reprompt(messages.KNOW_MORE).getResponse();
-    },
-};
+//         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeCountryIntent');
+//     },
+//     async handle(handlerInput) {
 
-const OfficeCountryIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
+//         var message = "";
+//         var country = "";
+//         let messageMore = "";
+//         var countryMessage = handlerInput.requestEnvelope.request.intent.slots.country.value;
 
-        return request.type === 'IntentRequest' && (request.intent.name === 'OfficeCountryIntent');
-    },
-    async handle(handlerInput) {
+//         if (handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
 
-        var message = "";
-        var country = "";
-        let messageMore = "";
-        var countryMessage = handlerInput.requestEnvelope.request.intent.slots.country.value;
+//             country = handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+//             proximity_office = await generic.getProximityOfficesCountryName(country);
+//             message = proximity_office + " is found in " + countryMessage;
+//             messageMore = messages.KNOW_MORE + " about " + proximity_office + "?";
+//             officeValue = proximity_office;
+//         }
+//         else {
 
-        if (handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
+//             messages = await generic.getMessages();
+//             proximity_offices = await generic.getProximityOffices();
+//             proximity_offices_country = await generic.getProximityOfficesCountry();
 
-            country = handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-            proximity_office = await generic.getProximityOfficesCountryName(country);
-            message = proximity_office + " is found in " + countryMessage;
-            messageMore = messages.KNOW_MORE + " about " + proximity_office + "?";
-            officeValue = proximity_office;
-        }
-        else {
+//             const {
+//                 requestEnvelope,
+//                 serviceClientFactory,
+//                 responseBuilder
+//             } = handlerInput;
 
-            messages = await generic.getMessages();
-            proximity_offices = await generic.getProximityOffices();
-            proximity_offices_country = await generic.getProximityOfficesCountry();
-
-            const {
-                requestEnvelope,
-                serviceClientFactory,
-                responseBuilder
-            } = handlerInput;
-
-            const consentToken = requestEnvelope.context.System.user.permissions &&
-                requestEnvelope.context.System.user.permissions.consentToken;
-            if (!consentToken) {
-                return responseBuilder
-                    .speak(messages.NOTIFY_MISSING_PERMISSIONS)
-                    .withAskForPermissionsConsentCard(PERMISSIONS)
-                    .getResponse();
-            }
-            try {
-                const {
-                    deviceId
-                } = requestEnvelope.context.System.device;
-                const deviceAddressServiceClient = serviceClientFactory.getDeviceAddressServiceClient();
-                const address = await deviceAddressServiceClient.getFullAddress(deviceId);
-                let countryCoordinates = await generic.getCountryCoordinates("MU");
+//             const consentToken = requestEnvelope.context.System.user.permissions &&
+//                 requestEnvelope.context.System.user.permissions.consentToken;
+//             if (!consentToken) {
+//                 return responseBuilder
+//                     .speak(messages.NOTIFY_MISSING_PERMISSIONS)
+//                     .withAskForPermissionsConsentCard(PERMISSIONS)
+//                     .getResponse();
+//             }
+//             try {
+//                 const {
+//                     deviceId
+//                 } = requestEnvelope.context.System.device;
+//                 const deviceAddressServiceClient = serviceClientFactory.getDeviceAddressServiceClient();
+//                 const address = await deviceAddressServiceClient.getFullAddress(deviceId);
+//                 let countryCoordinates = await generic.getCountryCoordinates("MU");
 
 
-                if(typeof address != "undefined"){
+//                 if(typeof address != "undefined"){
 
-     countryCoordinates = await generic.getCountryCoordinates(address.countryCode);
- }
-//console.log("countryCoordinates",countryCoordinates);
-  //          let nearestOffice = await getNearestOffice(countryCoordinates,handlerInput.requestEnvelope.request.intent.name == 'UserNearestOfficeIntent');
-    //        console.log("nearestOffice",nearestOffice);
-            // let response;
-            // if (address.addressLine1 === null && address.stateOrRegion === null) {
-            //     response = responseBuilder.speak(messages.NO_ADDRESS).getResponse();
-            // } else {
-                // const ADDRESS_MESSAGE = `${proximity_offices[proximity_offices_country[address.countryCode]]}`;
+//      countryCoordinates = await generic.getCountryCoordinates(address.countryCode);
+//  }
+// //console.log("countryCoordinates",countryCoordinates);
+//   //          let nearestOffice = await getNearestOffice(countryCoordinates,handlerInput.requestEnvelope.request.intent.name == 'UserNearestOfficeIntent');
+//     //        console.log("nearestOffice",nearestOffice);
+//             // let response;
+//             // if (address.addressLine1 === null && address.stateOrRegion === null) {
+//             //     response = responseBuilder.speak(messages.NO_ADDRESS).getResponse();
+//             // } else {
+//                 // const ADDRESS_MESSAGE = `${proximity_offices[proximity_offices_country[address.countryCode]]}`;
 
 
 
-                let nearestOffice = await generic.getNearestOffice(countryCoordinates, true);
+//                 let nearestOffice = await generic.getNearestOffice(countryCoordinates, true);
 
-                officeValue = nearestOffice['office'];
+//                 officeValue = nearestOffice['office'];
 
-                messageMore = messages.KNOW_MORE + " about " + officeValue + "?";
-                message = "No Office is found in " + countryMessage + " . But there is an office nearby you, named " + officeValue + ". And it is " + nearestOffice['distance'] + " km from you";
-            }
+//                 messageMore = messages.KNOW_MORE + " about " + officeValue + "?";
+//                 message = "No Office is found in " + countryMessage + " . But there is an office nearby you, named " + officeValue + ". And it is " + nearestOffice['distance'] + " km from you";
+//             }
 
-            catch (error) {
-                if (error.name !== 'ServiceError') {
-                    const response = responseBuilder.speak(messages.ERROR).getResponse();
-                    return response;
-                }
-                throw error;
-            }
+//             catch (error) {
+//                 if (error.name !== 'ServiceError') {
+//                     const response = responseBuilder.speak(messages.ERROR).getResponse();
+//                     return response;
+//                 }
+//                 throw error;
+//             }
 
-        }
-        return handlerInput.responseBuilder.speak(message).reprompt(messageMore).getResponse();
-    }
-};
+//         }
+//         return handlerInput.responseBuilder.speak(message).reprompt(messageMore).getResponse();
+//     }
+// };
 
-const OfficeDistanceIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
+// const OfficeDistanceIntent = {
+//     canHandle(handlerInput) {
+//         const {
+//             request
+//         } = handlerInput.requestEnvelope;
 
-        return request.type === 'IntentRequest' && (request.intent.name === 'OfficeDistanceIntent');
-    },
-    async handle(handlerInput) {
-        var  messages = await generic.getMessages();
-        var officeSlotFrom ="";
-        var officeSlotTo = "";
-        var distance= "";
+//         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeDistanceIntent');
+//     },
+//     async handle(handlerInput) {
+//         var  messages = await generic.getMessages();
+//         var officeSlotFrom ="";
+//         var officeSlotTo = "";
+//         var distance= "";
 
-        if (handlerInput.requestEnvelope.request.intent.slots.officefrom.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
-            officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-        }
+//         if (handlerInput.requestEnvelope.request.intent.slots.officefrom.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
+//             officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+//         }
             
-        if(handlerInput.requestEnvelope.request.intent.slots.officeto.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH"){
-            officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-            distance = await generic.getProximityOfficesDistance(officeSlotFrom, officeSlotTo);
-        }
-            returnMessage = "The distance between " + officeSlotFrom + " to " + officeSlotTo + " is " + distance + " kilometres";
+//         if(handlerInput.requestEnvelope.request.intent.slots.officeto.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH"){
+//             officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+//             distance = await generic.getProximityOfficesDistance(officeSlotFrom, officeSlotTo);
+//         }
+//             returnMessage = "The distance between " + officeSlotFrom + " to " + officeSlotTo + " is " + distance + " kilometres";
 
-        if (officeSlotFrom == officeSlotTo) {
-            officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
-            officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
-            returnMessage = (messages.SUGGESTON_DISTANCE_OFFICE);
-        }
-        else if (officeSlotFrom == "" && officeSlotTo == "") {
-            officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
-            officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
-            returnMessage = "I'm Sorry but " + officeSlotFrom + " and " + officeSlotTo + " does not exist.";
-        }
-        else if (officeSlotTo == "") {
-            officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
-            returnMessage = "I'm Sorry but " + officeSlotTo + " does not exist.";
-        }
-        else if (officeSlotFrom == "") {
-            officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
-            returnMessage = "I'm Sorry but " + officeSlotFrom + " does not exist.";
+//         if (officeSlotFrom == officeSlotTo) {
+//             officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
+//             officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
+//             returnMessage = (messages.SUGGESTON_DISTANCE_OFFICE);
+//         }
+//         else if (officeSlotFrom == "" && officeSlotTo == "") {
+//             officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
+//             officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
+//             returnMessage = "I'm Sorry but " + officeSlotFrom + " and " + officeSlotTo + " does not exist.";
+//         }
+//         else if (officeSlotTo == "") {
+//             officeSlotTo = handlerInput.requestEnvelope.request.intent.slots.officeto.value;
+//             returnMessage = "I'm Sorry but " + officeSlotTo + " does not exist.";
+//         }
+//         else if (officeSlotFrom == "") {
+//             officeSlotFrom = handlerInput.requestEnvelope.request.intent.slots.officefrom.value;
+//             returnMessage = "I'm Sorry but " + officeSlotFrom + " does not exist.";
 
-        }
+//         }
 
-        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
+//         return handlerInput.responseBuilder.speak(returnMessage).getResponse();
     
-    },
-};
+//     },
+// };
 
 const UserNearestOfficeIntent = {
     canHandle(handlerInput) {
@@ -472,21 +417,6 @@ const HelpIntent = {
     },
 };
 
-const CancelIntent = {
-    canHandle(handlerInput) {
-        const {
-            request
-        } = handlerInput.requestEnvelope;
-
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.CancelIntent';
-    },
-    handle(handlerInput) {
-        return handlerInput.responseBuilder
-            .speak(messages.GOODBYE)
-            .getResponse();
-    },
-};
-
 const StopIntent = {
     canHandle(handlerInput) {
         const {
@@ -523,6 +453,21 @@ const GetAddressError = {
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 
+
+exports.handler = function (event, context, callback) {
+    let alexa = Alexa.handler(event, context);
+    alexa.registerHandlers(
+        cancelIntent,
+        officeAltitude,
+        officeConnect,
+        officeCount,
+        officeDistance,
+        officeCountry
+    );
+    alexa.execute();
+};
+
+
 exports.handler = skillBuilder
     .addRequestHandlers(
         LaunchRequest,
@@ -530,15 +475,17 @@ exports.handler = skillBuilder
         YesIntent,
         NoIntent,
         UserDistanceOfficeIntent,
-        OfficeCountIntent,
-        OfficeCountryIntent,
+        // OfficeCountryIntent,
         SessionEndedRequest,
         HelpIntent,
         OfficeInfoIntent,
-        OfficeConnectIntent,
-        OfficeDistanceIntent,
-        CancelIntent,
-        OfficeAltitudeIntent,
+        officeConnect,
+        officeCount,
+        officeDistance,
+        officeCountry,
+        // OfficeDistanceIntent,
+        cancelIntent,
+        officeAltitude,
         StopIntent,
         UnhandledIntent,
     )
