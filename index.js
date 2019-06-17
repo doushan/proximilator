@@ -45,8 +45,8 @@ exports.handler = skillBuilder
         HelpIntent,
         NoIntent,
         YesIntent,
-        UnhandledIntent,
         StopIntent,
+        UnhandledIntent,
         SessionEndedRequest,
     )
     .addErrorHandlers(GetAddressError)
