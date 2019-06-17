@@ -20,6 +20,7 @@ const OfficeCountry =  require('./intents/OfficeCountry');
 const OfficeInfo = require('./intents/OfficeInfo');
 const UserDistanceOffice = require('./intents/UserDistanceOffice');
 const UserNearestOffice = require('./intents/UserNearestOffice');
+const OfficeDistance =  require('./intents/OfficeDistance');
 
 // Helpers
 const GetAddressError = require('./helpers/GetAddressError');
@@ -39,6 +40,7 @@ exports.handler = skillBuilder
         OfficeInfo,
         UserDistanceOffice,
         UserNearestOffice,
+        OfficeDistance,
         
         // register core intents
         CancelIntent,
