@@ -1,6 +1,5 @@
 const generic = require('../helpers/generic');
 
-
 const OfficeConnectIntent = {
     canHandle(handlerInput) {
         const {
@@ -10,6 +9,7 @@ const OfficeConnectIntent = {
         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeConnectIntent');
     },
     async handle(handlerInput) {
+        console.log("HIT-------------");
         var officeSlot = "";
         var message = "";
         let messages = await generic.getMessages();

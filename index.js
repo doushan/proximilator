@@ -28,15 +28,8 @@ const GetAddressError = require('./helpers/GetAddressError');
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
-        // register core intents
+        // register launch request
         LaunchRequest,
-        CancelIntent,
-        HelpIntent,
-        NoIntent,
-        YesIntent,
-        UnhandledIntent,
-        StopIntent,
-        SessionEndedRequest,
 
         // register custom intents
         OfficeAltitude,
@@ -45,7 +38,16 @@ exports.handler = skillBuilder
         OfficeCountry,
         OfficeInfo,
         UserDistanceOffice,
-        UserNearestOffice
+        UserNearestOffice,
+        
+        // register core intents
+        CancelIntent,
+        HelpIntent,
+        NoIntent,
+        YesIntent,
+        UnhandledIntent,
+        StopIntent,
+        SessionEndedRequest,
     )
     .addErrorHandlers(GetAddressError)
     .withApiClient(new Alexa.DefaultApiClient())
