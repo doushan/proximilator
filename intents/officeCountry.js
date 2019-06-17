@@ -1,14 +1,8 @@
-var generic = require('../generics/generic');
-let messages;
+var generic = require('../helpers/generic');
 
-const Alexa = require('ask-sdk-core');
-const axios = require('axios');
 
 let messages;
 let officeValue = "";
-let nearestOfficeValue = "";
-let proximity_offices;
-let proximity_offices_country;
 const PERMISSIONS = ['read::alexa:device:all:address'];
 
 const OfficeCountryIntent = {
@@ -20,8 +14,8 @@ const OfficeCountryIntent = {
         return request.type === 'IntentRequest' && (request.intent.name === 'OfficeCountryIntent');
     },
     async handle(handlerInput) {
-
-        messages = await generic.getMessages();
+        let messages = await generic.getMessages();
+        // messages = await generic.getMessages();
         var country = "";
         let messageMore = "";
         var countryMessage = handlerInput.requestEnvelope.request.intent.slots.country.value;
