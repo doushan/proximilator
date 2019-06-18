@@ -21,11 +21,11 @@ const YesIntent = {
         // else return to help
         if (sessionAttributes.officeName) {
             return handlerInput.responseBuilder.speak(proximity_offices[sessionAttributes.officeName]).getResponse();
-          } else {
+        } else {
             return handlerInput.responseBuilder
               .speak(messages.HELP)
               .getResponse();
-          }
+        }
     },
 };
 

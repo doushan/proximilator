@@ -28,7 +28,6 @@ const OfficeCountryIntent = {
       // Set the session attribute of officeName, which will be used in the yes intent(Reprompt of know more).
       const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
       sessionAttributes.officeName = proximity_office;
-
       officeValue = proximity_office;
     } else {
       messages = await generic.getMessages();
