@@ -177,10 +177,8 @@ const axios = require('axios');
     }
 
     const getNearestOffice = async (coordinates, near) => {
-        let officefromVal = {};
-        let officetoVal = {};
         let result = {};
-        let max = 0;
+        let max = null;
         let officeDistance = 0;
         let check;
         await axios.get('https://spreadsheets.google.com/feeds/list/1lgsc6VYu3cXbhnrcIFp1IhqQyIcIKWSPvZr4wxvOvKk/2/public/values?alt=json')
@@ -188,7 +186,7 @@ const axios = require('axios');
                 var results = response.data;
                 results.feed.entry.forEach((item) => {
                     officeDistance = distance(coordinates.lat, coordinates.long, item.gsx$lat.$t, item.gsx$lon.$t, 'K');
-                    check = near ? (officeDistance < max || max == 0) : (officeDistance > max);
+                    check = near ? (officeDistance < max || max == null) : (officeDistance > max);
                     if (check) {
                         max = officeDistance;
                         result['office'] = item.gsx$officename.$t;
