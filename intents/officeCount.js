@@ -13,7 +13,7 @@ const OfficeCountIntent = {
         let message = await generic.getMessages();
         proximity_offices = await generic.getProximityOffices();
         message = "There are " + Object.keys(proximity_offices).length + " offices in the Proximity Global Network";
-        return handlerInput.responseBuilder.speak(message).getResponse();
+        return handlerInput.responseBuilder.speak(message + messages.KNOW_MORE).getResponse();
     },
 };
 

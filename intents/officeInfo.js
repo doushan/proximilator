@@ -14,13 +14,25 @@ const OfficeInfoIntent = {
         var office = "";
         proximity_offices = await generic.getProximityOffices();
         var message = "";
-        if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
-            officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-            message = proximity_offices[officeSlot];
+
+        //Get the session attribute of the value stored.
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        // console.log("sessionAttributes.officeName", sessionAttributes.officeName);
+
+        if (sessionAttributes.officeName) {
+            message = proximity_offices[sessionAttributes.officeName];
+            console.log("sessionAttributes.officeName", sessionAttributes.officeName);
         } else {
-            officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.value;
-            message = "I'm sorry. but the " + officeSlot + " does not exist.";
+            if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
+                officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+                message = proximity_offices[officeSlot];
+            }
+            else {
+                officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.value;
+                message = "I'm sorry. but the " + officeSlot + " does not exist.";
+            }
         }
+            
         return handlerInput.responseBuilder.speak(message).getResponse();
     },
 };
