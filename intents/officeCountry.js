@@ -17,19 +17,17 @@ const OfficeCountryIntent = {
     let messages = await generic.getMessages();
     var country = "";
     let messageMore = "";
-    var countryMessage =
-      handlerInput.requestEnvelope.request.intent.slots.country.value;
+    var countryMessage = handlerInput.requestEnvelope.request.intent.slots.country.value;
 
-    if (
-      handlerInput.requestEnvelope.request.intent.slots.country.resolutions
-        .resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH"
-    ) {
-      country =
-        handlerInput.requestEnvelope.request.intent.slots.country.resolutions
-          .resolutionsPerAuthority[0].values[0].value.name;
+    if (handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
+      country =  handlerInput.requestEnvelope.request.intent.slots.country.resolutions.resolutionsPerAuthority[0].values[0].value.name;
       proximity_office = await generic.getProximityOfficesCountryName(country);
-      message = proximity_office + " is found in " + countryMessage;
+      message = proximity_office + " is found in " + countryMessage + ".";
       messageMore = messages.KNOW_MORE + " about " + proximity_office + "?";
+
+      // Set the session attribute of officeName, which will be used in the yes intent(Reprompt of know more).
+      const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+      sessionAttributes.officeName = proximity_office;
       officeValue = proximity_office;
     } else {
       messages = await generic.getMessages();
@@ -49,6 +47,7 @@ const OfficeCountryIntent = {
           .withAskForPermissionsConsentCard(PERMISSIONS)
           .getResponse();
       }
+
       try {
         const { deviceId } = requestEnvelope.context.System.device;
         const deviceAddressServiceClient = serviceClientFactory.getDeviceAddressServiceClient();
@@ -89,7 +88,7 @@ const OfficeCountryIntent = {
       }
     }
     return handlerInput.responseBuilder
-      .speak(message)
+      .speak(message + ' ' + messageMore)
       .reprompt(messageMore)
       .getResponse();
   }

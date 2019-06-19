@@ -22,7 +22,6 @@ const OfficeInfoIntent = {
             message = proximity_offices[sessionAttributes.officeName];
             console.log("sessionAttributes.officeName", sessionAttributes.officeName);
         } else {
-            console.log("ggggggggggggggggggggggggggggggggggg");
             if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
                 officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
                 message = proximity_offices[officeSlot];
