@@ -48,13 +48,26 @@ const OfficeCountryIntent = {
         throw error;
       }
     }
-  
+
+    let returnMessageFound = messages.OFFICE_COUNTRY_FOUND_RESPONSE;
+    returnMessageFound = returnMessage.replace(/{office}/g,proximity_office);
+    returnMessageFound = returnMessage.replace(/{country}/g,country);
+
+    let returnMessageNotFound = messages.OFFICE_COUNTRY_NOTFOUND_RESPONSE;
+    returnMessageNotFound = returnMessage.replace(/{country}/g,country);
+    returnMessageNotFound = returnMessage.replace(/{office}/g,proximity_office);
+    returnMessageNotFound = returnMessage.replace(/{distance}/g,distance);
+
+
+
     let messageMore = messages.KNOW_MORE + " about " + proximity_office + "?";
     let message;
     if(typeof distance == 'undefined'){
-      message = proximity_office + " is found in " + country + ". ";
+      // message = proximity_office + " is found in " + country + ". ";
+      message = returnMessageFound;
     } else {
-      message = "No office is found in " + country + " . But there is an office nearby you, named " + proximity_office + " and it is " + distance + " km from you. ";
+      // message = "No office is found in " + country + " . But there is an office nearby you, named " + proximity_office + " and it is " + distance + " km from you. ";
+      message = returnMessageNotFound;
     }
      
     // set session attribute for user office info

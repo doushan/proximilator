@@ -22,9 +22,14 @@ const OfficeDistanceIntent = {
 
         let distance = await generic.getProximityOfficesDistance(officeSlotFrom, officeSlotTo);
 
-        let returnMessage = "The distance between " + officeSlotFrom + " to " + officeSlotTo + " is " + distance + " kilometres";
+        let returnMessageOfficeDistance = messages.OFFICE_DISTANCE_RESPONSE;
+        returnMessageOfficeDistance = returnMessage.replace(/{office_from}/g,officeSlotFrom);
+        returnMessageOfficeDistance = returnMessage.replace(/{office_to}/g,officeSlotTo);
+        returnMessageOfficeDistance = returnMessage.replace(/{distance}/g,distance);
 
-        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
+        // let returnMessage = "The distance between " + officeSlotFrom + " to " + officeSlotTo + " is " + distance + " kilometres";
+
+        return handlerInput.responseBuilder.speak(returnMessageOfficeDistance).getResponse();
     },
 };
 

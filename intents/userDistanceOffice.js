@@ -40,8 +40,13 @@ const UserDistanceOfficeIntent = {
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
             let message_know_more = messages.KNOW_MORE + " about " + office + "?";
-            let message = "You are " + officeDistance + " km from " + office;
-            response = responseBuilder.speak(message + " " + message_know_more).reprompt(message_know_more).getResponse();
+
+            let returnMessageUserDistance = messages.OFFICE_USER_DISTANCE_RESPONSE;
+            returnMessageUserDistance = returnMessage.replace(/{distance}/g,officeDistance);
+            returnMessageUserDistance = returnMessage.replace(/{office}/g,office);
+
+            // let message = "You are " + officeDistance + " km from " + office;
+            response = responseBuilder.speak(returnMessageUserDistance + " " + message_know_more).reprompt(message_know_more).getResponse();
             return response;
 
         } catch (error) {
