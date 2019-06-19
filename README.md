@@ -9,7 +9,7 @@
                                                                                  
 Proximilator Voice App
 
-This is a voice application for Alexa to get information about proximity offices. It has been written in NodeJs and user AWS services.
+This is a voice application for Alexa to get information about proximity offices. It has been written in NodeJs and uses AWS services.
 ````
 
 ### Prerequisites
