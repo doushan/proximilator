@@ -16,8 +16,7 @@ const OfficeCountIntent = {
         let returnMessage = messages.OFFICE_COUNT_RESPONSE;
         returnMessage = returnMessage.replace(/{count}/g,Object.keys(proximity_offices).length);
 
-        // let message = "There are " + Object.keys(proximity_offices).length + " offices in the Proximity Global Network";
-        return handlerInput.responseBuilder.speak(returnMessage + ' ' + messages.KNOW_MORE).getResponse();
+        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
     },
 };
 

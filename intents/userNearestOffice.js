@@ -25,38 +25,34 @@ const UserNearestOfficeIntent = {
                 .getResponse();
         }
         try {
-            const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();            
             let countryCoordinates = {"lat": -20.2640544, "long": 57.4803621}
             if(typeof requestEnvelope.context.Geolocation != "undefined"){
                 const {coordinate} = requestEnvelope.context.Geolocation;
                 countryCoordinates = {"lat": coordinate.latitudeInDegrees, "long": coordinate.longitudeInDegrees}
             }
-
+            
             let nearestOffice = await generic.getNearestOffice(countryCoordinates, handlerInput.requestEnvelope.request.intent.name == 'UserNearestOfficeIntent');
-
-            let message_know_more = messages.KNOW_MORE + " about " + nearestOffice['office'] + "?";
-
+            
+            
             // set session attribute for user office info
+            const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();            
             sessionAttributes.officeName = nearestOffice['office'];
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-            let returnMessageNearestOffice = messages.OFFICE_NEAREST_RESPONSE;
-            returnMessageNearestOffice = returnMessage.replace(/{office}/g,nearestOffice['office']);
             
-            let returnMessageNearestOfficeSuggestion = messages.OFFICE_NEAREST_RESPONSE_SUGGESTION;
-            returnMessageNearestOfficeSuggestion = returnMessage.replace(/{office}/g,nearestOffice['office']);
-            returnMessageNearestOfficeSuggestion = returnMessage.replace(/{distance}/g,nearestOffice['distance']);
+            let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,nearestOffice['office']);
+            let returnMessage;
             
             let response;
             if(parseInt(nearestOffice['distance']) < 1){
-                // response = responseBuilder.speak("It looks like you are already at " + nearestOffice['office'] + ". " + message_know_more).reprompt(message_know_more).getResponse();
-                response = responseBuilder.speak(returnMessageNearestOffice + " " + message_know_more).reprompt(message_know_more).getResponse();
+                returnMessage = messages.OFFICE_NEAREST_RESPONSE_WITHIN_1KM;
+                returnMessage = returnMessage.replace(/{office}/g,nearestOffice['office']);
             } else {
-                // response = responseBuilder.speak(nearestOffice['office'] + " is " + nearestOffice['distance'] + " km from you" + ". " + message_know_more).reprompt(message_know_more).getResponse();
-                response = responseBuilder.speak(returnMessageNearestOfficeSuggestion + " " + message_know_more).reprompt(message_know_more).getResponse();
+                returnMessage = messages.OFFICE_NEAREST_RESPONSE;
+                returnMessage = returnMessage.replace(/{office}/g,nearestOffice['office']);
+                returnMessage = returnMessage.replace(/{distance}/g,nearestOffice['distance']);
             }
 
-            return response;
+            return responseBuilder.speak(returnMessage + " " + message_know_more).reprompt(message_know_more).getResponse();
 
         } catch (error) {
             if (error.name !== 'ServiceError') {

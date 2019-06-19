@@ -49,25 +49,18 @@ const OfficeCountryIntent = {
       }
     }
 
-    let returnMessageFound = messages.OFFICE_COUNTRY_FOUND_RESPONSE;
-    returnMessageFound = returnMessage.replace(/{office}/g,proximity_office);
-    returnMessageFound = returnMessage.replace(/{country}/g,country);
+    let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,nearestOffice['office']);
+    let returnMessage;
 
-    let returnMessageNotFound = messages.OFFICE_COUNTRY_NOTFOUND_RESPONSE;
-    returnMessageNotFound = returnMessage.replace(/{country}/g,country);
-    returnMessageNotFound = returnMessage.replace(/{office}/g,proximity_office);
-    returnMessageNotFound = returnMessage.replace(/{distance}/g,distance);
-
-
-
-    let messageMore = messages.KNOW_MORE + " about " + proximity_office + "?";
-    let message;
     if(typeof distance == 'undefined'){
-      // message = proximity_office + " is found in " + country + ". ";
-      message = returnMessageFound;
+      returnMessage = messages.OFFICE_COUNTRY_FOUND_RESPONSE;
+      returnMessage = returnMessage.replace(/{office}/g,proximity_office);
+      returnMessage = returnMessage.replace(/{country}/g,country);
     } else {
-      // message = "No office is found in " + country + " . But there is an office nearby you, named " + proximity_office + " and it is " + distance + " km from you. ";
-      message = returnMessageNotFound;
+      returnMessage = messages.OFFICE_COUNTRY_NOTFOUND_RESPONSE;
+      returnMessage = returnMessage.replace(/{country}/g,country);
+      returnMessage = returnMessage.replace(/{office}/g,proximity_office);
+      returnMessage = returnMessage.replace(/{distance}/g,distance);
     }
      
     // set session attribute for user office info
@@ -75,7 +68,7 @@ const OfficeCountryIntent = {
     handlerInput.attributesManager.setSessionAttributes(sessionAttributes);  
 
     return handlerInput.responseBuilder
-    .speak(message + ' ' + messageMore)
+    .speak(returnMessage + ' ' + message_know_more)
     .reprompt(messageMore)
     .getResponse();
   }

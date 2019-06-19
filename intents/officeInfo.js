@@ -12,9 +12,9 @@ const OfficeInfoIntent = {
     async handle(handlerInput) {
         let proximity_offices = await generic.getProximityOffices();
         let officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-        let message = proximity_offices[officeSlot];
+        let returnMessage = proximity_offices[officeSlot];
             
-        return handlerInput.responseBuilder.speak(message).getResponse();
+        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
     },
 };
 
