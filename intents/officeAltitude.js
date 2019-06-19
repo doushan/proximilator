@@ -20,7 +20,13 @@ const OfficeAltitudeIntent = {
         sessionAttributes.officeName = proximity_office.split("||")[0];
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
         
-        return handlerInput.responseBuilder.speak(proximity_office.split("||")[0] + " has the highest altitude at "+proximity_office.split("||")[1]+" meters above sea level. "+ messages.KNOW_MORE+"?").reprompt(messages.KNOW_MORE + " on " + proximity_office.split("||")[0] + "?").getResponse();
+
+        //{office} + " has the highest altitude at "+{office_altitude}+" meters above sea level."
+        let returnMessage = messages.OFFICE_ALTITUDE_RESPONSE;
+        returnMessage = returnMessage.replace(/{office}/g,proximity_office.split("||")[0]);
+        returnMessage = returnMessage.replace(/{office_altitude}/g,proximity_office.split("||")[1]);
+
+        return handlerInput.responseBuilder.speak(returnMessage + messages.KNOW_MORE+"?").reprompt(messages.KNOW_MORE + " on " + proximity_office.split("||")[0] + "?").getResponse();
     },
 };
 
