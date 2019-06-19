@@ -12,14 +12,16 @@ const OfficeConnectIntent = {
     async handle(handlerInput) {
         let messages = await generic.getMessages();
 
-        let contact = await generic.getProximityOfficeContact(officeSlot);
         let officeSlot = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        let contact = await generic.getProximityOfficeContact(officeSlot);
+
+        let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,officeSlot);
 
         let returnMessage = messages.OFFICE_CONNECT_RESPONSE;
         returnMessage = returnMessage.replace(/{office}/g,officeSlot);
         returnMessage = returnMessage.replace(/{contact}/g,contact);
             
-        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
+        return handlerInput.responseBuilder.speak(returnMessage).reprompt(message_know_more).getResponse();
     },
 };
 

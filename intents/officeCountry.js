@@ -8,8 +8,7 @@ const OfficeCountryIntent = {
   },
   async handle(handlerInput) {
     let messages = await generic.getMessages();
-    let distance;
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();       
+    let distance;    
 
     let country = handlerInput.requestEnvelope.request.intent.slots.country.value;
     let proximity_office = await generic.getProximityOfficesCountryName(country);
@@ -49,7 +48,7 @@ const OfficeCountryIntent = {
       }
     }
 
-    let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,nearestOffice['office']);
+    let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,proximity_office);
     let returnMessage;
 
     if(typeof distance == 'undefined'){
@@ -64,12 +63,13 @@ const OfficeCountryIntent = {
     }
      
     // set session attribute for user office info
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();   
     sessionAttributes.officeName = proximity_office;
     handlerInput.attributesManager.setSessionAttributes(sessionAttributes);  
 
     return handlerInput.responseBuilder
     .speak(returnMessage + ' ' + message_know_more)
-    .reprompt(messageMore)
+    .reprompt(message_know_more)
     .getResponse();
   }
 };

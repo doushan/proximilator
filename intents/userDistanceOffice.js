@@ -39,7 +39,7 @@ const UserDistanceOfficeIntent = {
             sessionAttributes.officeName = office;
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
-            let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,nearestOffice['office']);
+            let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,office);
             let returnMessage = messages.OFFICE_USER_DISTANCE_RESPONSE;
             returnMessage = returnMessage.replace(/{distance}/g,officeDistance);
             returnMessage = returnMessage.replace(/{office}/g,office);

@@ -16,7 +16,7 @@ const OfficeCountIntent = {
         let returnMessage = messages.OFFICE_COUNT_RESPONSE;
         returnMessage = returnMessage.replace(/{count}/g,Object.keys(proximity_offices).length);
 
-        return handlerInput.responseBuilder.speak(returnMessage).getResponse();
+        return handlerInput.responseBuilder.speak(returnMessage).reprompt(messages.KNOW_MORE).getResponse();
     },
 };
 

@@ -19,8 +19,8 @@ const OfficeAltitudeIntent = {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.officeName = proximity_office.split("||")[0];
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-        
-        let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,nearestOffice['office']);
+
+        let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,proximity_office.split("||")[0]);
         let returnMessage = messages.OFFICE_ALTITUDE_RESPONSE;
         returnMessage = returnMessage.replace(/{office}/g,proximity_office.split("||")[0]);
         returnMessage = returnMessage.replace(/{office_altitude}/g,proximity_office.split("||")[1]);
