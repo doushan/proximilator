@@ -22,14 +22,12 @@ const OfficeDistanceIntent = {
 
         let distance = await generic.getProximityOfficesDistance(officeSlotFrom, officeSlotTo);
 
-        let message_know_more = messages.KNOW_MORE_OFFICE.replace(/{office}/g,officeSlot);
-
         let returnMessage = messages.OFFICE_DISTANCE_RESPONSE;
         returnMessage = returnMessage.replace(/{office_from}/g,officeSlotFrom);
         returnMessage = returnMessage.replace(/{office_to}/g,officeSlotTo);
         returnMessage = returnMessage.replace(/{distance}/g,distance);
 
-        return handlerInput.responseBuilder.speak(returnMessage).reprompt(message_know_more).getResponse();
+        return handlerInput.responseBuilder.speak(returnMessage).reprompt(messages.KNOW_MORE).getResponse();
     },
 };
 
