@@ -77,14 +77,11 @@ const axios = require('axios');
 
 
     const getProximityOfficesCountryName = async (country) => {
-        let final = "test";
-
+        let final = "";
         await axios.get('https://spreadsheets.google.com/feeds/list/1lgsc6VYu3cXbhnrcIFp1IhqQyIcIKWSPvZr4wxvOvKk/2/public/values?alt=json')
             .then(function (response) {
                 var results = response.data;
                 results.feed.entry.forEach((item) => {
-                    console.log("FINAL", country)
-                    console.log("Country Name", item.gsx$countryname.$t.toLowerCase())
                     if ((item.gsx$country.$t.toLowerCase() == country.toLowerCase()) || (item.gsx$countryname.$t.toLowerCase() == country.toLowerCase())) {
                         final = item.gsx$officename.$t;
 

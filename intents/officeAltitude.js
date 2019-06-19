@@ -18,7 +18,8 @@ const OfficeAltitudeIntent = {
         // Set the session attribute of officeName, which will be used in the yes intent(Reprompt of know more).
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.officeName = proximity_office.split("||")[0];
-
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+        
         return handlerInput.responseBuilder.speak(proximity_office.split("||")[0] + " has the highest altitude at "+proximity_office.split("||")[1]+" meters above sea level. "+ messages.KNOW_MORE+"?").reprompt(messages.KNOW_MORE + " on " + proximity_office.split("||")[0] + "?").getResponse();
     },
 };

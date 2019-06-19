@@ -1,5 +1,5 @@
 const generic = require('../helpers/generic');
-
+const PERMISSIONS = ["read::alexa:device:all:address"];
 
 const UserNearestOfficeIntent = {
     canHandle(handlerInput) {

@@ -1,5 +1,5 @@
 const generic = require('../helpers/generic');
-
+const PERMISSIONS = ["read::alexa:device:all:address"];
 
 const UserDistanceOfficeIntent = {
     canHandle(handlerInput) {
@@ -11,12 +11,8 @@ const UserDistanceOfficeIntent = {
     },
     async handle(handlerInput) {
         let messages = await generic.getMessages();
-        messages = await generic.getMessages();
-        proximity_offices = await generic.getProximityOffices();
-        proximity_offices_country = await generic.getProximityOfficesCountry();
         const {
             requestEnvelope,
-            serviceClientFactory,
             responseBuilder
         } = handlerInput;
 
@@ -29,42 +25,23 @@ const UserDistanceOfficeIntent = {
                 .getResponse();
         }
         try {
-            const {
-                deviceId
-            } = requestEnvelope.context.System.device;
-            const deviceAddressServiceClient = serviceClientFactory.getDeviceAddressServiceClient();
-            const address = await deviceAddressServiceClient.getFullAddress(deviceId);
-
-            console.log('Address successfully retrieved, now responding to user.', address);
-            let countryCoordinates = await generic.getCountryCoordinates("MU");
-            if(typeof address != "undefined"){
-
-                countryCoordinates = await generic.getCountryCoordinates(address.countryCode);
+            const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();            
+            let countryCoordinates = {"lat": -20.2640544, "long": 57.4803621}
+            if(typeof requestEnvelope.context.Geolocation != "undefined"){
+                const {coordinate} = requestEnvelope.context.Geolocation;
+                countryCoordinates = {"lat": coordinate.latitudeInDegrees, "long": coordinate.longitudeInDegrees}
             }
-            console.log("countryCoordinates", countryCoordinates);
+            let office = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+            let officeDistance = await generic.getProximityUserDistance(countryCoordinates, office);
+            
 
-            var office = "";
-            let message = "";
-            let returnMessage = "";
-            let response = "";
-            // office = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-            let officeDistance;
-// console.log("OFFICECE",officeDistance);
-            if (handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].status.code == "ER_SUCCESS_MATCH") {
-                office = handlerInput.requestEnvelope.request.intent.slots.office.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-                officeDistance = await generic.getProximityUserDistance(countryCoordinates, office);
-                message = messages.KNOW_MORE + " about " + office + "?";
-                returnMessage = "You are " + officeDistance + " km from " + office;
-                response = responseBuilder.speak(returnMessage).reprompt(message).getResponse();
+            // set session attribute for user office info
+            sessionAttributes.officeName = office;
+            handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
-            }
-            else {
-                office = handlerInput.requestEnvelope.request.intent.slots.office.value;
-                returnMessage = "I'm Sorry but " + office + " does not exist.";
-                response = responseBuilder.speak(returnMessage).getResponse();
-            }
-            officeValue = office;
-
+            let message_know_more = messages.KNOW_MORE + " about " + office + "?";
+            let message = "You are " + officeDistance + " km from " + office;
+            response = responseBuilder.speak(message + " " + message_know_more).reprompt(message_know_more).getResponse();
             return response;
 
         } catch (error) {
