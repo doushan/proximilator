@@ -2,28 +2,28 @@
 const Alexa = require('ask-sdk-core');
 
 // Core Intents
-const LaunchRequest = require('./intents/core/LaunchRequest');
-const CancelIntent = require('./intents/core/Cancel');
-const HelpIntent = require('./intents/core/Help');
-const NoIntent = require('./intents/core/No');
-const YesIntent = require('./intents/core/Yes');
-const UnhandledIntent = require('./intents/core/Unhandled');
-const StopIntent = require('./intents/core/Stop');
-const SessionEndedRequest = require('./intents/core/SessionEndedRequest');
+const LaunchRequest = require('./intents/core/launchRequest');
+const CancelIntent = require('./intents/core/cancel');
+const HelpIntent = require('./intents/core/help');
+const NoIntent = require('./intents/core/no');
+const YesIntent = require('./intents/core/yes');
+const UnhandledIntent = require('./intents/core/unhandled');
+const StopIntent = require('./intents/core/stop');
+const SessionEndedRequest = require('./intents/core/sessionEndedRequest');
 
 
 // Custom Intents
-const OfficeAltitude = require('./intents/OfficeAltitude');
-const OfficeConnect = require('./intents/OfficeConnect');
-const OfficeCount = require('./intents/OfficeCount');
-const OfficeCountry =  require('./intents/OfficeCountry');
-const OfficeInfo = require('./intents/OfficeInfo');
-const UserDistanceOffice = require('./intents/UserDistanceOffice');
-const UserNearestOffice = require('./intents/UserNearestOffice');
-const OfficeDistance =  require('./intents/OfficeDistance');
+const OfficeAltitude = require('./intents/officeAltitude');
+const OfficeConnect = require('./intents/officeConnect');
+const OfficeCount = require('./intents/officeCount');
+const OfficeCountry =  require('./intents/officeCountry');
+const OfficeInfo = require('./intents/officeInfo');
+const UserDistanceOffice = require('./intents/userDistanceOffice');
+const UserNearestOffice = require('./intents/userNearestOffice');
+const OfficeDistance =  require('./intents/officeDistance');
 
 // Helpers
-const GetAddressError = require('./helpers/GetAddressError');
+const GetAddressError = require('./helpers/getAddressError');
 
 // Register Request Handlers
 const skillBuilder = Alexa.SkillBuilders.custom();
