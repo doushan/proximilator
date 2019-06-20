@@ -6,15 +6,50 @@
   / /_/ // /_/ // / / /|   /  / / / /|_/ / / / / /    / /| |  / /  / / / // /_/ /
  / ____// _, _// /_/ //   | _/ / / /  / /_/ / / /___ / ___ | / /  / /_/ // _, _/ 
 /_/    /_/ |_| \____//_/|_|/___//_/  /_//___//_____//_/  |_|/_/   \____//_/ |_|  
-                                                                                 
+                                                                        
+
 Proximilator Voice App
 
-This is a voice application for Alexa to get information about proximity offices. It has been written in NodeJs and uses AWS services.
+This is a voice application for Alexa to get information about proximity offices. 
+
+It has been written in NodeJs and uses AWS services.
 ````
 
 ### Prerequisites
 You need to have location permissions allowed on Alexa for the skill to work.
 
+### Folder Structure
+
+````
+|   index.js
+|   package-lock.json
+|   package.json
+|   README.md
+| 
++---helpers
+|       generic.js
+|       GetAddressError.js
+|       
++---intents
+   |   officeAltitude.js
+   |   officeConnect.js
+   |   officeCount.js
+   |   officeCountry.js
+   |   officeDistance.js
+   |   officeInfo.js
+   |   userDistanceOffice.js
+   |   userNearestOffice.js
+   |   
+   \---core
+           Cancel.js
+           Help.js
+           LaunchRequest.js
+           No.js
+           SessionEndedRequest.js
+           Stop.js
+           Unhandled.js
+           Yes.js
+````
 
 ### BOT Scenarios
 The chatbot supports these scenarios.
